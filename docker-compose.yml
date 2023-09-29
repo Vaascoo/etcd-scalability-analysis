@@ -1,0 +1,64 @@
+version: '3'
+services:
+  # proxy:
+  #   image: nginx:latest
+  #   volumes:
+  #     - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+  #   networks:
+  #     - cluster
+  worker0:
+    image: gcr.io/etcd-development/etcd:v3.5.9
+    command:
+      - etcd
+      - --name=etcd-00
+      - --data-dir=/etcd-data
+      - --initial-advertise-peer-urls=http://esle-worker0-1.esle_cluster:2380
+      - --advertise-client-urls=http://esle-worker0-1.esle_cluster:2379
+      - --listen-client-urls=http://0.0.0.0:2379
+      - --listen-peer-urls=http://0.0.0.0:2380
+      - --initial-cluster=etcd-00=http://esle-worker0-1.esle_cluster:2380,etcd-01=http://esle-worker1-1.esle_cluster:2380,etcd-02=http://esle-worker2-1.esle_cluster:2380
+      - --initial-cluster-state=new
+      - --initial-cluster-token=etcd-cluster-1
+    ports:
+      - "2179:2379"
+      - "2180:2380"
+    networks:
+      - cluster
+  worker1:
+    image: gcr.io/etcd-development/etcd:v3.5.9
+    command:
+      - etcd
+      - --name=etcd-01
+      - --data-dir=/etcd-data
+      - --initial-advertise-peer-urls=http://esle-worker1-1.esle_cluster:2380
+      - --advertise-client-urls=http://esle-worker1-1.esle_cluster:2379
+      - --listen-client-urls=http://0.0.0.0:2379
+      - --listen-peer-urls=http://0.0.0.0:2380
+      - --initial-cluster=etcd-00=http://esle-worker0-1.esle_cluster:2380,etcd-01=http://esle-worker1-1.esle_cluster:2380,etcd-02=http://esle-worker2-1.esle_cluster:2380
+      - --initial-cluster-state=new
+      - --initial-cluster-token=etcd-cluster-1
+    ports:
+      - "2279:2379"
+      - "2280:2380"
+    networks:
+      - cluster
+  worker2:
+    image: gcr.io/etcd-development/etcd:v3.5.9
+    command:
+      - etcd
+      - --name=etcd-02
+      - --data-dir=/etcd-data
+      - --initial-advertise-peer-urls=http://esle-worker2-1.esle_cluster:2380
+      - --advertise-client-urls=http://esle-worker2-1.esle_cluster:2379
+      - --listen-client-urls=http://0.0.0.0:2379
+      - --listen-peer-urls=http://0.0.0.0:2380
+      - --initial-cluster=etcd-00=http://esle-worker0-1.esle_cluster:2380,etcd-01=http://esle-worker1-1.esle_cluster:2380,etcd-02=http://esle-worker2-1.esle_cluster:2380
+      - --initial-cluster-state=new
+      - --initial-cluster-token=etcd-cluster-1
+    ports:
+      - "2379:2379"
+      - "2380:2380"
+    networks:
+      - cluster
+networks:
+  cluster:
