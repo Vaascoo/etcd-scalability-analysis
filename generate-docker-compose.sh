@@ -9,6 +9,8 @@ fi
 
 NUM_WORKERS=$1
 
+CLUSTER=$(for ((j=0; j<$NUM_WORKERS; j++)); do echo -n "etcd-$j=http://esle-worker$j-1.esle_cluster:2380"; if [ $j -lt $(($NUM_WORKERS-1)) ]; then echo -n ","; fi; done)
+
 cat > docker-compose.yml <<EOL
 version: '3'
 services:
@@ -26,7 +28,7 @@ for ((i=0; i<$NUM_WORKERS; i++)); do
       - --advertise-client-urls=http://esle-worker$i-1.esle_cluster:2379
       - --listen-client-urls=http://0.0.0.0:2379
       - --listen-peer-urls=http://0.0.0.0:2380
-      - --initial-cluster=$(for ((j=0; j<$NUM_WORKERS; j++)); do echo -n "etcd-$j=http://esle-worker$j-1.esle_cluster:2380"; if [ $j -lt $(($NUM_WORKERS-1)) ]; then echo -n ","; fi; done)
+      - --initial-cluster=$CLUSTER
       - --initial-cluster-state=new
       - --initial-cluster-token=etcd-cluster-1
     ports:
