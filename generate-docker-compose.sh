@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# TODO: How to not have clashing port numbers
-
 if [ "$#" -ne 1 ]; then
   echo "Usage: $0 <number_of_workers>"
   exit 1
@@ -32,8 +30,8 @@ for ((i=0; i<$NUM_WORKERS; i++)); do
       - --initial-cluster-state=new
       - --initial-cluster-token=etcd-cluster-1
     ports:
-      - "$((2379 + $i)):2379"
-      - "$((2380 + $i)):2380"
+      - "$((5000 + $i)):2379"
+      - "$((6000 + $i)):2380"
     networks:
       - cluster
 EOL
@@ -45,3 +43,6 @@ networks:
 EOL
 
 echo "Docker Compose file generated with $NUM_WORKERS worker(s)."
+echo "Available endpoints;"
+ENDPOINTS=$(for ((j=0; j<$NUM_WORKERS; j++)); do echo -n "http://127.0.0.1:$((5000+$j))"; if [ $j -lt $(($NUM_WORKERS-1)) ]; then echo -n ","; fi; done)
+echo $ENDPOINTS

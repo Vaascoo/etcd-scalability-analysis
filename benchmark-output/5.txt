@@ -1,0 +1,68 @@
+benchmark --endpoints=http://127.0.0.1:5000,http://127.0.0.1:5001,http://127.0.0.1:5002,http://127.0.0.1:5003,http://127.0.0.1:5004 --clients=100 --conns=1000 txn-mixed --key-size=256 --total=100000
+bench with linearizable range
+Total Read Ops: 49870
+Details:
+Summary:
+  Total:	41.2983 secs.
+  Slowest:	0.5043 secs.
+  Fastest:	0.0036 secs.
+  Average:	0.0526 secs.
+  Stddev:	0.0634 secs.
+  Requests/sec:	1207.5555
+
+Response time histogram:
+  0.0036 [1]	|
+  0.0537 [44251]	|∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎
+  0.1037 [1134]	|∎
+  0.1538 [1021]	|
+  0.2039 [995]	|
+  0.2539 [664]	|
+  0.3040 [711]	|
+  0.3541 [713]	|
+  0.4042 [194]	|
+  0.4542 [151]	|
+  0.5043 [35]	|
+
+Latency distribution:
+  10% in 0.0203 secs.
+  25% in 0.0266 secs.
+  50% in 0.0372 secs.
+  75% in 0.0443 secs.
+  90% in 0.0640 secs.
+  95% in 0.2012 secs.
+  99% in 0.3406 secs.
+  99.9% in 0.4476 secs.
+
+Total Write Ops: 50130
+Details:
+Summary:
+  Total:	41.2987 secs.
+  Slowest:	0.3389 secs.
+  Fastest:	0.0048 secs.
+  Average:	0.0300 secs.
+  Stddev:	0.0355 secs.
+  Requests/sec:	1213.8394
+
+Response time histogram:
+  0.0048 [1]	|
+  0.0382 [45127]	|∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎
+  0.0716 [802]	|
+  0.1050 [1237]	|∎
+  0.1384 [1026]	|
+  0.1718 [1142]	|∎
+  0.2052 [465]	|
+  0.2386 [215]	|
+  0.2721 [81]	|
+  0.3055 [32]	|
+  0.3389 [2]	|
+
+Latency distribution:
+  10% in 0.0122 secs.
+  25% in 0.0160 secs.
+  50% in 0.0207 secs.
+  75% in 0.0248 secs.
+  90% in 0.0380 secs.
+  95% in 0.1242 secs.
+  99% in 0.1846 secs.
+  99.9% in 0.2611 secs.
+
