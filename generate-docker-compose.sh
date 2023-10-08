@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 if [ "$#" -ne 1 ]; then
   echo "Usage: $0 <number_of_workers>"
@@ -32,6 +32,8 @@ for ((i=0; i<$NUM_WORKERS; i++)); do
     ports:
       - "$((5000 + $i)):2379"
       - "$((6000 + $i)):2380"
+    resources:
+    - cpuset-cpus: '$(($(nproc) - $i - 1))'
     networks:
       - cluster
 EOL
@@ -42,7 +44,7 @@ networks:
   cluster:
 EOL
 
-echo "Docker Compose file generated with $NUM_WORKERS worker(s)."
-echo "Available endpoints;"
+# echo "Docker Compose file generated with $NUM_WORKERS worker(s)."
+# echo "Available endpoints;"
 ENDPOINTS=$(for ((j=0; j<$NUM_WORKERS; j++)); do echo -n "http://127.0.0.1:$((5000+$j))"; if [ $j -lt $(($NUM_WORKERS-1)) ]; then echo -n ","; fi; done)
 echo $ENDPOINTS
