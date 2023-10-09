@@ -1,0 +1,100 @@
+#!/usr/bin/env python
+
+import argparse
+import subprocess
+import os
+
+def remove_node(index):
+    subprocess.run([
+        "docker",
+        "container",
+        "stop",
+        f"esle-etcd{index}"
+        ])
+    return subprocess.run([
+        "docker",
+        "container",
+        "rm",
+        f"esle-etcd{index}"
+        ])
+
+def remove_network(name):
+    return subprocess.run([
+        "docker",
+        "network",
+        "rm",
+        name
+        ])
+
+def create_network(name):
+    return subprocess.run([
+        "docker",
+        "network",
+        "create",
+        "-d",
+        "bridge",
+        name
+        ])
+
+def start_node(network, index, total):
+    peers = ','.join(map(lambda i: f"etcd-{i}=http://esle-etcd{i}.{network}:2380", range(total)))
+    print(peers)
+    return subprocess.run([
+        "docker",
+        "run",
+        "--name",
+        f"esle-etcd{index}",
+        "-p",
+        f"{5000 + index}:2379",
+        "-p",
+        f"{6000 + index}:2380",
+        "--network",
+        network,
+        "--cpuset-cpus",
+        f"{index % os.cpu_count()}",
+        "-d",
+        "--entrypoint",
+        "etcd",
+        "gcr.io/etcd-development/etcd:v3.5.9",
+        f"--name=etcd-{index}",
+        "--data-dir=/etcd-data",
+        f"--initial-advertise-peer-urls=http://esle-etcd{index}.{network}:2380",
+        f"--advertise-client-urls=http://esle-etcd{index}.{network}:2379",
+        "--listen-client-urls=http://0.0.0.0:2379",
+        "--listen-peer-urls=http://0.0.0.0:2380",
+        f"--initial-cluster={peers}",
+        "--initial-cluster-state=new",
+        "--initial-cluster-token=etcd-cluster-1",
+        ])
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--count", "-c")
+parser.add_argument("--network", "-n")
+
+if __name__ == "__main__":
+    args = parser.parse_args()
+    if args.count:
+        count = int(args.count)
+
+        if args.network:
+            network = args.network
+        else:
+            network = "esle_cluster"
+
+        remove_network(network)
+        print(create_network(network))
+
+        for i in range(count):
+            print(start_node(network, i, count))
+
+        peers = ','.join(map(lambda i: f"http://127.0.0.1:{5000 + i}", range(count)))
+        print(f"\nCOPY THIS:\nexport ENDPOINTS={peers}")
+        while input("$>>") != "exit":
+            pass
+
+        for i in range(count):
+            print(remove_node(i))
+
+        print(remove_network(network))
+    else:
+        parser.print_help()
