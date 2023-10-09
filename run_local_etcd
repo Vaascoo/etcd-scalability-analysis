@@ -2,6 +2,7 @@
 
 import argparse
 import subprocess
+import multiprocessing
 import os
 
 def remove_node(index):
@@ -67,9 +68,14 @@ def start_node(network, index, total):
         "--initial-cluster-token=etcd-cluster-1",
         ])
 
+def worker_target(network, index, total):
+    print(remove_node(i))
+    print(start_node(network, i, count))
+
 parser = argparse.ArgumentParser()
 parser.add_argument("--count", "-c")
 parser.add_argument("--network", "-n")
+parser.add_argument("--fork", "-f")
 
 if __name__ == "__main__":
     args = parser.parse_args()
@@ -84,16 +90,35 @@ if __name__ == "__main__":
         remove_network(network)
         print(create_network(network))
 
-        for i in range(count):
-            print(start_node(network, i, count))
+        if args.fork is None:
+            for i in range(count):
+                print(remove_node(i))
+                print(start_node(network, i, count))
+        else:
+            processes = []
+            for i in range(count):
+                processes.append(multiprocessing.Process(target=worker_target, args=(network, i, count,)))
+                processes[-1].start()
+
+            for i in range(count):
+                processes[i].join()
 
         peers = ','.join(map(lambda i: f"http://127.0.0.1:{5000 + i}", range(count)))
         print(f"\nCOPY THIS:\nexport ENDPOINTS={peers}")
         while input("$>>") != "exit":
             pass
 
-        for i in range(count):
-            print(remove_node(i))
+        if args.fork is None:
+            for i in range(count):
+                print(remove_node(i))
+        else:
+            processes = []
+            for i in range(count):
+                processes.append(multiprocessing.Process(target=remove_node, args=(i,)))
+                processes[-1].start()
+
+            for i in range(count):
+                processes[i].join()
 
         print(remove_network(network))
     else:
