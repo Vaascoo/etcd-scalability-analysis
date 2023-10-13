@@ -2,6 +2,12 @@
 
 The system at study is [etcd](https://etcd.io/).
 
+## Project Structure
+
+- [benchmarks-l](./benchmarks-l/) and [benchmarks-s](./benchmarks-s/) contain the experimental data and scripts to generate the plots
+- [scripts](./scripts/) scripts uses to run the cluster and benchmarks
+- [etcd](./etcd/) contains the source code for etcd added as as git submodule
+
 ## Requirements
 
 - [Go version 1.16+](https://go.dev/doc/install)
