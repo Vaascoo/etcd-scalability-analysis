@@ -10,12 +10,14 @@ services:
       - --advertise-client-urls=http://esle-worker0-1.esle_cluster:2379
       - --listen-client-urls=http://0.0.0.0:2379
       - --listen-peer-urls=http://0.0.0.0:2380
-      - --initial-cluster=etcd-0=http://esle-worker0-1.esle_cluster:2380,etcd-1=http://esle-worker1-1.esle_cluster:2380,etcd-2=http://esle-worker2-1.esle_cluster:2380,etcd-3=http://esle-worker3-1.esle_cluster:2380,etcd-4=http://esle-worker4-1.esle_cluster:2380,etcd-5=http://esle-worker5-1.esle_cluster:2380,etcd-6=http://esle-worker6-1.esle_cluster:2380,etcd-7=http://esle-worker7-1.esle_cluster:2380,etcd-8=http://esle-worker8-1.esle_cluster:2380,etcd-9=http://esle-worker9-1.esle_cluster:2380,etcd-10=http://esle-worker10-1.esle_cluster:2380
+      - --initial-cluster=etcd-0=http://esle-worker0-1.esle_cluster:2380,etcd-1=http://esle-worker1-1.esle_cluster:2380,etcd-2=http://esle-worker2-1.esle_cluster:2380
       - --initial-cluster-state=new
       - --initial-cluster-token=etcd-cluster-1
     ports:
       - "5000:2379"
       - "6000:2380"
+    resources:
+    - cpuset-cpus: '15'
     networks:
       - cluster
   worker1:
@@ -28,12 +30,14 @@ services:
       - --advertise-client-urls=http://esle-worker1-1.esle_cluster:2379
       - --listen-client-urls=http://0.0.0.0:2379
       - --listen-peer-urls=http://0.0.0.0:2380
-      - --initial-cluster=etcd-0=http://esle-worker0-1.esle_cluster:2380,etcd-1=http://esle-worker1-1.esle_cluster:2380,etcd-2=http://esle-worker2-1.esle_cluster:2380,etcd-3=http://esle-worker3-1.esle_cluster:2380,etcd-4=http://esle-worker4-1.esle_cluster:2380,etcd-5=http://esle-worker5-1.esle_cluster:2380,etcd-6=http://esle-worker6-1.esle_cluster:2380,etcd-7=http://esle-worker7-1.esle_cluster:2380,etcd-8=http://esle-worker8-1.esle_cluster:2380,etcd-9=http://esle-worker9-1.esle_cluster:2380,etcd-10=http://esle-worker10-1.esle_cluster:2380
+      - --initial-cluster=etcd-0=http://esle-worker0-1.esle_cluster:2380,etcd-1=http://esle-worker1-1.esle_cluster:2380,etcd-2=http://esle-worker2-1.esle_cluster:2380
       - --initial-cluster-state=new
       - --initial-cluster-token=etcd-cluster-1
     ports:
       - "5001:2379"
       - "6001:2380"
+    resources:
+    - cpuset-cpus: '14'
     networks:
       - cluster
   worker2:
@@ -46,156 +50,14 @@ services:
       - --advertise-client-urls=http://esle-worker2-1.esle_cluster:2379
       - --listen-client-urls=http://0.0.0.0:2379
       - --listen-peer-urls=http://0.0.0.0:2380
-      - --initial-cluster=etcd-0=http://esle-worker0-1.esle_cluster:2380,etcd-1=http://esle-worker1-1.esle_cluster:2380,etcd-2=http://esle-worker2-1.esle_cluster:2380,etcd-3=http://esle-worker3-1.esle_cluster:2380,etcd-4=http://esle-worker4-1.esle_cluster:2380,etcd-5=http://esle-worker5-1.esle_cluster:2380,etcd-6=http://esle-worker6-1.esle_cluster:2380,etcd-7=http://esle-worker7-1.esle_cluster:2380,etcd-8=http://esle-worker8-1.esle_cluster:2380,etcd-9=http://esle-worker9-1.esle_cluster:2380,etcd-10=http://esle-worker10-1.esle_cluster:2380
+      - --initial-cluster=etcd-0=http://esle-worker0-1.esle_cluster:2380,etcd-1=http://esle-worker1-1.esle_cluster:2380,etcd-2=http://esle-worker2-1.esle_cluster:2380
       - --initial-cluster-state=new
       - --initial-cluster-token=etcd-cluster-1
     ports:
       - "5002:2379"
       - "6002:2380"
-    networks:
-      - cluster
-  worker3:
-    image: gcr.io/etcd-development/etcd:v3.5.9
-    command:
-      - etcd
-      - --name=etcd-3
-      - --data-dir=/etcd-data
-      - --initial-advertise-peer-urls=http://esle-worker3-1.esle_cluster:2380
-      - --advertise-client-urls=http://esle-worker3-1.esle_cluster:2379
-      - --listen-client-urls=http://0.0.0.0:2379
-      - --listen-peer-urls=http://0.0.0.0:2380
-      - --initial-cluster=etcd-0=http://esle-worker0-1.esle_cluster:2380,etcd-1=http://esle-worker1-1.esle_cluster:2380,etcd-2=http://esle-worker2-1.esle_cluster:2380,etcd-3=http://esle-worker3-1.esle_cluster:2380,etcd-4=http://esle-worker4-1.esle_cluster:2380,etcd-5=http://esle-worker5-1.esle_cluster:2380,etcd-6=http://esle-worker6-1.esle_cluster:2380,etcd-7=http://esle-worker7-1.esle_cluster:2380,etcd-8=http://esle-worker8-1.esle_cluster:2380,etcd-9=http://esle-worker9-1.esle_cluster:2380,etcd-10=http://esle-worker10-1.esle_cluster:2380
-      - --initial-cluster-state=new
-      - --initial-cluster-token=etcd-cluster-1
-    ports:
-      - "5003:2379"
-      - "6003:2380"
-    networks:
-      - cluster
-  worker4:
-    image: gcr.io/etcd-development/etcd:v3.5.9
-    command:
-      - etcd
-      - --name=etcd-4
-      - --data-dir=/etcd-data
-      - --initial-advertise-peer-urls=http://esle-worker4-1.esle_cluster:2380
-      - --advertise-client-urls=http://esle-worker4-1.esle_cluster:2379
-      - --listen-client-urls=http://0.0.0.0:2379
-      - --listen-peer-urls=http://0.0.0.0:2380
-      - --initial-cluster=etcd-0=http://esle-worker0-1.esle_cluster:2380,etcd-1=http://esle-worker1-1.esle_cluster:2380,etcd-2=http://esle-worker2-1.esle_cluster:2380,etcd-3=http://esle-worker3-1.esle_cluster:2380,etcd-4=http://esle-worker4-1.esle_cluster:2380,etcd-5=http://esle-worker5-1.esle_cluster:2380,etcd-6=http://esle-worker6-1.esle_cluster:2380,etcd-7=http://esle-worker7-1.esle_cluster:2380,etcd-8=http://esle-worker8-1.esle_cluster:2380,etcd-9=http://esle-worker9-1.esle_cluster:2380,etcd-10=http://esle-worker10-1.esle_cluster:2380
-      - --initial-cluster-state=new
-      - --initial-cluster-token=etcd-cluster-1
-    ports:
-      - "5004:2379"
-      - "6004:2380"
-    networks:
-      - cluster
-  worker5:
-    image: gcr.io/etcd-development/etcd:v3.5.9
-    command:
-      - etcd
-      - --name=etcd-5
-      - --data-dir=/etcd-data
-      - --initial-advertise-peer-urls=http://esle-worker5-1.esle_cluster:2380
-      - --advertise-client-urls=http://esle-worker5-1.esle_cluster:2379
-      - --listen-client-urls=http://0.0.0.0:2379
-      - --listen-peer-urls=http://0.0.0.0:2380
-      - --initial-cluster=etcd-0=http://esle-worker0-1.esle_cluster:2380,etcd-1=http://esle-worker1-1.esle_cluster:2380,etcd-2=http://esle-worker2-1.esle_cluster:2380,etcd-3=http://esle-worker3-1.esle_cluster:2380,etcd-4=http://esle-worker4-1.esle_cluster:2380,etcd-5=http://esle-worker5-1.esle_cluster:2380,etcd-6=http://esle-worker6-1.esle_cluster:2380,etcd-7=http://esle-worker7-1.esle_cluster:2380,etcd-8=http://esle-worker8-1.esle_cluster:2380,etcd-9=http://esle-worker9-1.esle_cluster:2380,etcd-10=http://esle-worker10-1.esle_cluster:2380
-      - --initial-cluster-state=new
-      - --initial-cluster-token=etcd-cluster-1
-    ports:
-      - "5005:2379"
-      - "6005:2380"
-    networks:
-      - cluster
-  worker6:
-    image: gcr.io/etcd-development/etcd:v3.5.9
-    command:
-      - etcd
-      - --name=etcd-6
-      - --data-dir=/etcd-data
-      - --initial-advertise-peer-urls=http://esle-worker6-1.esle_cluster:2380
-      - --advertise-client-urls=http://esle-worker6-1.esle_cluster:2379
-      - --listen-client-urls=http://0.0.0.0:2379
-      - --listen-peer-urls=http://0.0.0.0:2380
-      - --initial-cluster=etcd-0=http://esle-worker0-1.esle_cluster:2380,etcd-1=http://esle-worker1-1.esle_cluster:2380,etcd-2=http://esle-worker2-1.esle_cluster:2380,etcd-3=http://esle-worker3-1.esle_cluster:2380,etcd-4=http://esle-worker4-1.esle_cluster:2380,etcd-5=http://esle-worker5-1.esle_cluster:2380,etcd-6=http://esle-worker6-1.esle_cluster:2380,etcd-7=http://esle-worker7-1.esle_cluster:2380,etcd-8=http://esle-worker8-1.esle_cluster:2380,etcd-9=http://esle-worker9-1.esle_cluster:2380,etcd-10=http://esle-worker10-1.esle_cluster:2380
-      - --initial-cluster-state=new
-      - --initial-cluster-token=etcd-cluster-1
-    ports:
-      - "5006:2379"
-      - "6006:2380"
-    networks:
-      - cluster
-  worker7:
-    image: gcr.io/etcd-development/etcd:v3.5.9
-    command:
-      - etcd
-      - --name=etcd-7
-      - --data-dir=/etcd-data
-      - --initial-advertise-peer-urls=http://esle-worker7-1.esle_cluster:2380
-      - --advertise-client-urls=http://esle-worker7-1.esle_cluster:2379
-      - --listen-client-urls=http://0.0.0.0:2379
-      - --listen-peer-urls=http://0.0.0.0:2380
-      - --initial-cluster=etcd-0=http://esle-worker0-1.esle_cluster:2380,etcd-1=http://esle-worker1-1.esle_cluster:2380,etcd-2=http://esle-worker2-1.esle_cluster:2380,etcd-3=http://esle-worker3-1.esle_cluster:2380,etcd-4=http://esle-worker4-1.esle_cluster:2380,etcd-5=http://esle-worker5-1.esle_cluster:2380,etcd-6=http://esle-worker6-1.esle_cluster:2380,etcd-7=http://esle-worker7-1.esle_cluster:2380,etcd-8=http://esle-worker8-1.esle_cluster:2380,etcd-9=http://esle-worker9-1.esle_cluster:2380,etcd-10=http://esle-worker10-1.esle_cluster:2380
-      - --initial-cluster-state=new
-      - --initial-cluster-token=etcd-cluster-1
-    ports:
-      - "5007:2379"
-      - "6007:2380"
-    networks:
-      - cluster
-  worker8:
-    image: gcr.io/etcd-development/etcd:v3.5.9
-    command:
-      - etcd
-      - --name=etcd-8
-      - --data-dir=/etcd-data
-      - --initial-advertise-peer-urls=http://esle-worker8-1.esle_cluster:2380
-      - --advertise-client-urls=http://esle-worker8-1.esle_cluster:2379
-      - --listen-client-urls=http://0.0.0.0:2379
-      - --listen-peer-urls=http://0.0.0.0:2380
-      - --initial-cluster=etcd-0=http://esle-worker0-1.esle_cluster:2380,etcd-1=http://esle-worker1-1.esle_cluster:2380,etcd-2=http://esle-worker2-1.esle_cluster:2380,etcd-3=http://esle-worker3-1.esle_cluster:2380,etcd-4=http://esle-worker4-1.esle_cluster:2380,etcd-5=http://esle-worker5-1.esle_cluster:2380,etcd-6=http://esle-worker6-1.esle_cluster:2380,etcd-7=http://esle-worker7-1.esle_cluster:2380,etcd-8=http://esle-worker8-1.esle_cluster:2380,etcd-9=http://esle-worker9-1.esle_cluster:2380,etcd-10=http://esle-worker10-1.esle_cluster:2380
-      - --initial-cluster-state=new
-      - --initial-cluster-token=etcd-cluster-1
-    ports:
-      - "5008:2379"
-      - "6008:2380"
-    networks:
-      - cluster
-  worker9:
-    image: gcr.io/etcd-development/etcd:v3.5.9
-    command:
-      - etcd
-      - --name=etcd-9
-      - --data-dir=/etcd-data
-      - --initial-advertise-peer-urls=http://esle-worker9-1.esle_cluster:2380
-      - --advertise-client-urls=http://esle-worker9-1.esle_cluster:2379
-      - --listen-client-urls=http://0.0.0.0:2379
-      - --listen-peer-urls=http://0.0.0.0:2380
-      - --initial-cluster=etcd-0=http://esle-worker0-1.esle_cluster:2380,etcd-1=http://esle-worker1-1.esle_cluster:2380,etcd-2=http://esle-worker2-1.esle_cluster:2380,etcd-3=http://esle-worker3-1.esle_cluster:2380,etcd-4=http://esle-worker4-1.esle_cluster:2380,etcd-5=http://esle-worker5-1.esle_cluster:2380,etcd-6=http://esle-worker6-1.esle_cluster:2380,etcd-7=http://esle-worker7-1.esle_cluster:2380,etcd-8=http://esle-worker8-1.esle_cluster:2380,etcd-9=http://esle-worker9-1.esle_cluster:2380,etcd-10=http://esle-worker10-1.esle_cluster:2380
-      - --initial-cluster-state=new
-      - --initial-cluster-token=etcd-cluster-1
-    ports:
-      - "5009:2379"
-      - "6009:2380"
-    networks:
-      - cluster
-  worker10:
-    image: gcr.io/etcd-development/etcd:v3.5.9
-    command:
-      - etcd
-      - --name=etcd-10
-      - --data-dir=/etcd-data
-      - --initial-advertise-peer-urls=http://esle-worker10-1.esle_cluster:2380
-      - --advertise-client-urls=http://esle-worker10-1.esle_cluster:2379
-      - --listen-client-urls=http://0.0.0.0:2379
-      - --listen-peer-urls=http://0.0.0.0:2380
-      - --initial-cluster=etcd-0=http://esle-worker0-1.esle_cluster:2380,etcd-1=http://esle-worker1-1.esle_cluster:2380,etcd-2=http://esle-worker2-1.esle_cluster:2380,etcd-3=http://esle-worker3-1.esle_cluster:2380,etcd-4=http://esle-worker4-1.esle_cluster:2380,etcd-5=http://esle-worker5-1.esle_cluster:2380,etcd-6=http://esle-worker6-1.esle_cluster:2380,etcd-7=http://esle-worker7-1.esle_cluster:2380,etcd-8=http://esle-worker8-1.esle_cluster:2380,etcd-9=http://esle-worker9-1.esle_cluster:2380,etcd-10=http://esle-worker10-1.esle_cluster:2380
-      - --initial-cluster-state=new
-      - --initial-cluster-token=etcd-cluster-1
-    ports:
-      - "5010:2379"
-      - "6010:2380"
+    resources:
+    - cpuset-cpus: '13'
     networks:
       - cluster
 networks:
