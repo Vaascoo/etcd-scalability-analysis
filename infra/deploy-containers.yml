@@ -1,0 +1,15 @@
+---
+
+- hosts: etcd
+  become: yes
+  become_user: sudo
+  remote_user: ubuntu
+
+  tasks:
+    - name: Install Docker
+      apt:
+        name: docker.io
+        state: present
+        update_cache: yes
+        
+    - name: Run container
