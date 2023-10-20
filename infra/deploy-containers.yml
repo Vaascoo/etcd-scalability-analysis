@@ -13,3 +13,24 @@
         update_cache: yes
         
     - name: Run container
+      docker_container:
+        name: etcd
+        image: gcr.io/etcd-development/etcd:v3.5.9
+        state: started
+        restart_policy: always
+        published_ports:
+          - 2379:2379
+          - 2380:2380
+        entrypoint: /usr/local/bin/etcd
+        command: |
+          --name {{ inventory_hostname }}
+          --data-dir /etcd-data
+          --initial-advertise-peer-urls=http://{{ hostvars[groups['etcd'][0]]['ansible_default_ipv4']['address'] }}:2380
+          --advertise-client-urls=http://{{ hostvars[groups['etcd'][0]]['ansible_default_ipv4']['address'] }}:2379
+          --listen-client-urls=http://0.0.0.0:2379
+          --listen-peer-urls=http://0.0.0.0:2380
+          --initial-cluster=TODO
+          --initial-cluster-state=new
+          --initial-cluster-token=etcd-cluster
+
+

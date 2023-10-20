@@ -24,3 +24,38 @@ of the system. Discuss the different portions that limit the scalability of the 
 under test according to the USL.
 
     > USL provides a model of system performance under load, predicts behavior beyond observed load (slides 05-capacity-planning)
+
+
+# Factors
+
+Number of nodes 
+    3 vs 5
+Snapshot Count
+    5000 vs 10000
+CPU cores (???)
+    1 vs 2
+BackendBatchLimit
+
+Disk Configuration (last resort)
+    HDD vs SDD
+
+
+
+------
+Number of clients
+Number of connections
+Heartbeat interval (only relevant in crash fault model)
+Election timeout   (same ^)
+Snapshot
+
+Key size 
+    8 vs 256
+Ratio 
+    50% vs 90%
+Consistency
+    Serializable vs linearizable
+
+
+
+Identify main factos (e.g. 3) and the other are 
+confounded
