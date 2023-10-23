@@ -6,18 +6,17 @@ resource "google_compute_instance" "etcd" {
 
     boot_disk {
         initialize_params {
-            image = "debian-cloud/debian.11"
+            image = "ubuntu-minimal-2304-lunar-amd64-v20230919"
         }
     }
 
     network_interface {
         network = "default"
         access_config {
-            // Include this section to give the VM an external ip address
         }
     }
 
     metadata = {
-      ssh-keys = "ubuntu:${file("/home/vagrant/.ssh/id_rsa.pub")}"
+      ssh-keys = "ubuntu:${file("./id_ed25519.pub")}"
     }
 }

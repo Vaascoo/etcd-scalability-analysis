@@ -1,5 +1,5 @@
 variable "GCP_PROJECT_ID" {
-    default = "TODO"
+    default = "esle-402917"
 }
 
 variable "GCP_MACHINE_TYPE" {
@@ -7,7 +7,7 @@ variable "GCP_MACHINE_TYPE" {
 }
 
 variable "GCP_ZONE" {
-    default = "europe-west3-c"
+    default = "asia-southeast2-b"
 }
 
 variable "NODE_COUNT" {

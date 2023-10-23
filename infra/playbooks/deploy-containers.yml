@@ -1,0 +1,54 @@
+---
+
+- hosts: targets
+  become: yes
+  become_user: root
+  remote_user: ubuntu
+
+  tasks:
+    - name: Install Docker
+      apt:
+        name: docker.io
+        state: present
+        update_cache: yes
+
+    - name: Create a list of URLs
+      set_fact:
+        url_list: "{{ url_list | default([]) + [ hostvars[item].inventory_hostname + '=http://' + hostvars[item].inventory_hostname + ':2380'] }}"
+      with_items: "{{ groups['targets'] }}"  # Replace 'your_group_name' with the actual group name from your inventory.
+
+    - name: Format the list of URLs
+      set_fact:
+        formatted_url_list: "{{ url_list | join(',') }}"  # Replace 'your_group_name' with the actual group name from your inventory.
+
+    - name: Print the url list
+      debug:
+        var: formatted_url_list
+
+    - name: Deploy hosts file
+      template:
+        src: ../hosts.j2
+        dest: /etc/hosts
+        
+    - name: Run container
+      docker_container:
+        name: etcd
+        image: gcr.io/etcd-development/etcd:v3.5.9
+        state: started
+        restart_policy: always
+        published_ports:
+          - 0.0.0.0:2379:2379
+          - 0.0.0.0:2380:2380
+        entrypoint: /usr/local/bin/etcd
+        command: |
+          --name {{ inventory_hostname }}
+          --data-dir /etcd-data
+          --initial-advertise-peer-urls=http://{{ ansible_host }}:2380
+          --advertise-client-urls=http://{{ ansible_host }}:2379
+          --listen-client-urls=http://0.0.0.0:2379
+          --listen-peer-urls=http://0.0.0.0:2380
+          --initial-cluster={{ formatted_url_list }}
+          --initial-cluster-state=new
+          --initial-cluster-token=etcd-cluster
+
+
