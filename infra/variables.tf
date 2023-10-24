@@ -11,5 +11,5 @@ variable "GCP_ZONE" {
 }
 
 variable "NODE_COUNT" {
-  default = "3"
+  default = "5"
 }

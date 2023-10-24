@@ -12,6 +12,16 @@
         state: present
         update_cache: yes
 
+
+    - name: Create a list of nodes
+      set_fact:
+        node_list: "{{ node_list | default([]) + [ 'http://' + hostvars[item].ansible_host + ':2379'] }}"
+      with_items: "{{ groups['targets'] }}"  # Replace 'your_group_name' with the actual group name from your inventory.
+
+    - name: Format the list of nodes
+      set_fact:
+        formatted_node_list: "{{ node_list | join(',') }}"  # Replace 'your_group_name' with the actual group name from your inventory.
+
     - name: Create a list of URLs
       set_fact:
         url_list: "{{ url_list | default([]) + [ hostvars[item].inventory_hostname + '=http://' + hostvars[item].inventory_hostname + ':2380'] }}"
@@ -32,7 +42,7 @@
         
     - name: Stop all containers
       shell:
-        cmd: docker container stop `docker container ps -a -q`
+        cmd: docker container stop `docker container ps -a -q` || exit 0
 
     - name: Run container
       shell:
@@ -48,3 +58,12 @@
           --initial-cluster={{ formatted_url_list }} \
           --initial-cluster-state=new \
           --initial-cluster-token=etcd-cluster
+
+    - name: Output nodes.sh
+      delegate_to: localhost
+      become: no
+      shell: |
+        cat <<EOF > ../nodes.sh
+        export ETCDCTL_API=3
+        export ENDPOINTS={{ formatted_node_list }}
+        EOF
