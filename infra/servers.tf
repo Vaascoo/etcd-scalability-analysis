@@ -4,9 +4,9 @@ resource "google_compute_instance" "etcd" {
   machine_type = var.GCP_MACHINE_TYPE
   zone         = var.GCP_ZONE
 
-  #scratch_disk {
-  #    interface = "NVME"
-  #}
+  scratch_disk {
+      interface = "NVME"
+  }
 
   boot_disk {
     initialize_params {

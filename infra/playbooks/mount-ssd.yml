@@ -1,0 +1,16 @@
+---
+
+- hosts: targets
+  become: yes
+  become_user: root
+  remote_user: ubuntu
+
+  tasks:
+    - name: Mount SSD disk
+      shell:
+        cmd: |
+          export SSD_PATH=$(find /dev/ | grep google-local-nvme-ssd)
+          sudo mkfs.ext4 -F $SSD_PATH
+          sudo mkdir -p /mnt/disks/etcd-ssd
+          sudo mount $SSD_PATH /mnt/disks/etcd-ssd
+          sudo chmod a+w /mnt/disks/etcd-ssd

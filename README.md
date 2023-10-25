@@ -35,6 +35,7 @@ go gc:
 terraform plan --out plan.out
 terraform apply plan.out
 ansible all -m ping -v
+(if running SSD) ansible-playbook playbooks/mount-ssd.yml
 ansible-playbook playbooks/deploy-containers.yml
 
 time benchmark txn-mixed --rw-ratio=4 --consistency s --key-size 256 --clients 1000 --conns 100 --endpoints $ENDPOINTS --total 500000

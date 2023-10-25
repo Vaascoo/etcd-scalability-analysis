@@ -6,3 +6,5 @@ terraform.tfstate.backup
 .terraform.lock.hcl
 plan.out
 inventory.ini
+.terraform
+.terraform.tfstate.lock.info
