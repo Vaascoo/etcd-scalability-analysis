@@ -1,3 +1,49 @@
+# new stuff
+
+what/where can be changed
+
+cores:
+    /infra/variables.tf 
+        GCP_MACHINE_TYPE
+        n1-standard-1
+        n1-standard-2
+
+disk:
+    /infra/servers.tf
+        scratch_disk {
+            interface = "SCSI"
+        }
+
+nodes:
+    /infra/variables.tf
+        NODE_COUNT
+
+snapshot:
+    /infra/playbooks/deploy-containers.yml
+        --snapshot-count
+
+backend:
+    /infra/playbooks/deploy-containers.yml
+        --backend-batch-limit
+
+go gc:
+    /infra/playbooks/deploy-containers.yml
+        -e GOGC=
+
+
+
+terraform plan --out plan.out
+terraform apply plan.out
+ansible all -m ping -v
+ansible-playbook playbooks/deploy-containers.yml
+
+time benchmark txn-mixed --rw-ratio=4 --consistency s --key-size 256 --clients 1000 --conns 100 --endpoints $ENDPOINTS --total 500000
+
+time benchmark txn-mixed --rw-ratio=4 --consistency l --key-size 256 --clients 1000 --conns 100 --endpoints $ENDPOINTS --total 500000
+
+terraform destroy
+
+
 # Etcd Performance and Scalability
 
 The system at study is [etcd](https://etcd.io/).

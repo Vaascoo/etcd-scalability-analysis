@@ -27,16 +27,41 @@ under test according to the USL.
 
 # Factors
 
+CPU cores
+    1 vs 2
+Disk Configuration (last resort)
+    HDD vs SDD
 Number of nodes 
     3 vs 5
 Snapshot Count
     5000 vs 10000
-CPU cores (???)
-    1 vs 2
-BackendBatchLimit
+BackendBatchLimit (maximum operations before commit the backend transaction)
+    5000 vs 10000
+Go Garbage Collection Percentage
+    100% vs 10%
 
-Disk Configuration (last resort)
-    HDD vs SDD
+Machines:
+n1-standard-1  -> 1 core HDD
+
+A - CPU Cores (1,2)
+B - Disk Configuration (HDD,SDD)
+C - Number of nodes (3,5)
+D - Snapshot Count (5000,10000)
+E - BackendBatchLimit (5000, 10000)
+F - Go Garbage Collection (10,100)
+
+Experiment  A   B   C   D   E   F 
+1           -1  -1  -1  1   1   1 
+2           1   -1  -1  -1  -1  1 
+3           -1  1   -1  -1  1   -1 
+4           1   1   -1  1   -1  -1 
+5           -1  -1  1   1   -1  -1 
+6           1   -1  1   -1  1   -1 
+7           1   1   1   -1  -1  1 
+8           1   1   1   1   1   1 
+
+
+
 
 
 
