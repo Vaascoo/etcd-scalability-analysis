@@ -1,6 +1,6 @@
 ---
 
-- hosts: targets
+- hosts: external
   become: yes
   become_user: root
   remote_user: ubuntu
@@ -38,39 +38,6 @@
         src: ../templates/hosts.j2
         dest: /etc/hosts
 
-          # - name: Download etcd
-          #   shell:
-          #     cmd: |
-          #       ETCD_VER=v3.5.9
-          #       DOWNLOAD_URL=https://github.com/etcd-io/etcd/releases/download
-          #       rm -f /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz
-          #       sudo rm -rf /tmp/etcd-download-test && mkdir -p /tmp/etcd-download-test
-          #       curl -L ${DOWNLOAD_URL}/${ETCD_VER}/etcd-${ETCD_VER}-linux-amd64.tar.gz -o /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz
-          #       sudo tar xzvf /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz -C /tmp/etcd-download-test --strip-components=1
-          #       rm -f /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz
-
-          # - name: Stop all etcd instances
-          #   shell:
-          #     cmd: |
-          #       pkill -i etcd || exit 0
-
-          # - name: Run etcd
-          #   shell:
-          #     cmd: |
-          #       export GOGC=10
-          #       sudo /tmp/etcd-download-test/etcd \
-          #       --name {{ inventory_hostname }} \
-          #       --snapshot-count=5000 \
-          #       --backend-batch-limit=10000 \
-          #       --wal-dir=/mnt/wal \
-          #       --initial-advertise-peer-urls=http://{{ inventory_hostname }}:2380 \
-          #       --advertise-client-urls=http://{{ inventory_hostname }}:2379 \
-          #       --listen-client-urls=http://0.0.0.0:2379 \
-          #       --listen-peer-urls=http://0.0.0.0:2380 \
-          #       --initial-cluster={{ formatted_url_list }} \
-          #       --initial-cluster-state=new \
-          #       --initial-cluster-token=etcd-cluster &>> /dev/null & disown
-    
     - name: Stop all containers
       shell:
         cmd: docker container stop `docker container ps -a -q` || exit 0
@@ -81,11 +48,11 @@
           docker run --mount "type=bind,source=/mnt,target=/wal" -d -p "2379:2379" -p "2380:2380" -e GOGC=10 \
           gcr.io/etcd-development/etcd:v3.5.9 \
           etcd \
-          --name {{ inventory_hostname }} \
+          --name {{ inventory_hostname[:-9] }} \
           --data-dir=/wal/data \
           --wal-dir=/wal/wal \
-          --initial-advertise-peer-urls=http://{{ inventory_hostname }}:2380 \
-          --advertise-client-urls=http://{{ inventory_hostname }}:2379 \
+          --initial-advertise-peer-urls=http://{{ inventory_hostname[:-9] }}:2380 \
+          --advertise-client-urls=http://{{ inventory_hostname[:-9] }}:2379 \
           --listen-client-urls=http://0.0.0.0:2379 \
           --listen-peer-urls=http://0.0.0.0:2380 \
           --initial-cluster={{ formatted_url_list }} \

@@ -1,5 +1,6 @@
 %{ for host in host_list ~}
 ${host.name} ansible_host=${host.network_interface.0.network_ip} ansible_user=ubuntu ansible_python_interpreter=/usr/bin/python3 ansible_connection=ssh
+${host.name}_external ansible_host=${host.network_interface.0.access_config.0.nat_ip} ansible_user=ubuntu ansible_python_interpreter=/usr/bin/python3 ansible_connection=ssh
 %{ endfor ~}
 ${admin.name} ansible_host=${admin.network_interface.0.access_config.0.nat_ip} ansible_user=ubuntu ansible_python_interpreter=/usr/bin/python3 ansible_connection=ssh
 
@@ -9,3 +10,7 @@ ${host.name}
 %{ endfor ~}
 [admin]
 ${admin.name}
+[external]
+%{ for host in host_list ~}
+${host.name}_external
+%{ endfor ~}
