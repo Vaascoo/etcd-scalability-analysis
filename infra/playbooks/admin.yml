@@ -8,32 +8,34 @@
     - name: Install Go
       apt:
         name: 
-          - golang-go
           - iputils-ping
           - ansible
+          - git
         state: present
         update_cache: true
-    - name: Fetch the etcd build
-      get_url:
-        url: https://github.com/etcd-io/etcd/releases/download/v3.5.9/etcd-v3.5.9-linux-amd64.tar.gz
-        dest: /home/ubuntu/etcd.tar.gz
-    - name: Fetch the etcd source code
-      get_url:
-        url: https://github.com/etcd-io/etcd/archive/refs/tags/v3.5.9.tar.gz        
-        dest: /home/ubuntu/v3.5.9.tar.gz
-    - name: Install etcd's benchmark tool
-      shell: 
-        cmd: |
-          tar xf v3.5.9.tar.gz
-          cd etcd-3.5.9 && go install -v ./tools/benchmark
-          cp /root/go/bin/* /usr/bin/
-        chdir: /home/ubuntu
-    - name: Extract etcd and install etcdctl
+    - name: Install Go
       shell:
         cmd: |
-         tar xf etcd.tar.gz
-         cp etcd-v3.5.9-linux-amd64/etcd* /usr/bin/
-        chdir: /home/ubuntu
+          cd /home/ubuntu
+          runuser -l ubuntu -c 'curl -fsSLo- https://s.id/golang-linux | bash'
+          cat <<EOF >> /home/ubuntu/.bashrc
+          export PATH=$PATH:/home/ubuntu/go/bin:/home/ubuntu/go/package/bin
+          EOF
+    - name: Clone etcd repository
+      git:
+        repo: https://github.com/etcd-io/etcd.git
+        dest: /home/ubuntu/etcd
+    - name: Install etcd's benchmark tool
+      shell:
+        cmd: |
+          git config --global --add safe.directory /home/ubuntu/etcd
+          cd /home/ubuntu/etcd
+          /home/ubuntu/go install -v ./tools/benchmark
+    - name: Install etcd
+      shell:
+        cmd: |
+          cd /home/ubuntu/etcd
+          ./build.sh
     - name: Replace /etc/hosts
       template:
         src: ../templates/hosts.j2
