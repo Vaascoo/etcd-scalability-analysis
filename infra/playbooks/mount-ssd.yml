@@ -3,14 +3,23 @@
 - hosts: targets
   become: yes
   become_user: root
-  remote_user: ubuntu
 
   tasks:
     - name: Mount SSD disk
       shell:
-        cmd: |
-          export SSD_PATH=$(find /dev/ | grep google-local-nvme-ssd)
-          sudo mkfs.ext4 -F $SSD_PATH
-          sudo mkdir -p /mnt/disks/etcd-ssd
-          sudo mount $SSD_PATH /mnt/disks/etcd-ssd
-          sudo chmod a+w /mnt/disks/etcd-ssd
+        cmd: umount /mnt &>> /dev/null
+    - name: Wipe the filesystem table
+      shell:
+        cmd: wipefs -a /dev/nvme0n1
+    - name: Partition Table
+      shell:
+        cmd: parted /dev/nvme0n1 mklabel gpt
+    - name: Create a partition
+      shell:
+        cmd: parted /dev/nvme0n1 mkpart primary ext4 0% 100%
+    - name: Create ext4 filesystem
+      shell:
+        cmd: mkfs.ext4 -L "NVME" -F /dev/nvme0n1p1
+    - name: Mount the filesystem on /mnt
+      shell:
+        cmd: mount /dev/nvme0n1p1 /mnt

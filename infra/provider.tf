@@ -12,7 +12,7 @@ terraform {
 }
 
 provider "google" {
-  credentials = file("esle-402917-2bc146125413.json")
+  credentials = file("keys/esle-402917-2bc146125413.json")
   project     = var.GCP_PROJECT_ID
   zone        = var.GCP_ZONE
 }

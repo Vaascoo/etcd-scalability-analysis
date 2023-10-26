@@ -1,2 +1,0 @@
-export ETCDCTL_API=3
-export ENDPOINTS=http://104.199.174.151:2379,http://35.229.253.125:2379,http://34.80.45.100:2379
