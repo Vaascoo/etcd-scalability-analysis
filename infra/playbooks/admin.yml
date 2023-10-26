@@ -11,16 +11,19 @@
           - iputils-ping
           - ansible
           - git
+          - golang-go
         state: present
         update_cache: true
-    - name: Install Go
+    - name: Fetch the etcd build
+      get_url:
+        url: https://github.com/etcd-io/etcd/releases/download/v3.5.9/etcd-v3.5.9-linux-amd64.tar.gz
+        dest: /home/ubuntu/etcd.tar.gz
+    - name: Extract etcd and install etcdctl
       shell:
         cmd: |
-          cd /home/ubuntu
-          runuser -l ubuntu -c 'curl -fsSLo- https://s.id/golang-linux | bash'
-          cat <<EOF >> /home/ubuntu/.bashrc
-          export PATH=$PATH:/home/ubuntu/go/bin:/home/ubuntu/go/package/bin
-          EOF
+         tar xf etcd.tar.gz
+         cp etcd-v3.5.9-linux-amd64/etcd* /usr/bin/
+        chdir: /home/ubuntu
     - name: Clone etcd repository
       git:
         repo: https://github.com/etcd-io/etcd.git
@@ -28,14 +31,9 @@
     - name: Install etcd's benchmark tool
       shell:
         cmd: |
-          git config --global --add safe.directory /home/ubuntu/etcd
-          cd /home/ubuntu/etcd
-          /home/ubuntu/go install -v ./tools/benchmark
-    - name: Install etcd
-      shell:
-        cmd: |
-          cd /home/ubuntu/etcd
-          ./build.sh
+          go install -v ./tools/benchmark
+          cp /root/go/bin/* /usr/bin/
+        chdir: /home/ubuntu/etcd
     - name: Replace /etc/hosts
       template:
         src: ../templates/hosts.j2
@@ -54,10 +52,3 @@
         export ENDPOINTS={{ formatted_node_list }}
         EOF
         chown ubuntu:ubuntu /home/ubuntu/nodes.sh
-    - name: Copy ansible files to the node
-      copy:
-        src: ../
-        dest: /home/ubuntu/deploys
-        owner: ubuntu
-        group: ubuntu
-        mode: '0666'
