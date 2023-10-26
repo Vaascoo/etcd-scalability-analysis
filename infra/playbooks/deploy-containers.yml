@@ -33,10 +33,10 @@
       debug:
         var: formatted_url_list
 
-          # - name: Deploy hosts file
-          #   template:
-          #     src: ../hosts.j2
-          #     dest: /etc/hosts
+    - name: Deploy hosts file
+      template:
+        src: ../templates/hosts.j2
+        dest: /etc/hosts
 
           # - name: Download etcd
           #   shell:
@@ -78,7 +78,7 @@
     - name: Run container
       shell:
         cmd: |
-          docker run --mount "type=bind,source=/mnt/wal,target=/wal" -d -p "2379:2379" -p "2380:2380" -e GOGC=10 \
+          docker run --mount "type=bind,source=/mnt,target=/wal" -d -p "2379:2379" -p "2380:2380" -e GOGC=10 \
           gcr.io/etcd-development/etcd:v3.5.9 \
           etcd \
           --name {{ inventory_hostname }} \

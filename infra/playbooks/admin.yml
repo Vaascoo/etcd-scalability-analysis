@@ -1,0 +1,61 @@
+---
+
+- hosts: admin
+  become: yes
+  become_user: root
+
+  tasks:
+    - name: Install Go
+      apt:
+        name: 
+          - golang-go
+          - iputils-ping
+          - ansible
+        state: present
+        update_cache: true
+    - name: Fetch the etcd build
+      get_url:
+        url: https://github.com/etcd-io/etcd/releases/download/v3.5.9/etcd-v3.5.9-linux-amd64.tar.gz
+        dest: /home/ubuntu/etcd.tar.gz
+    - name: Fetch the etcd source code
+      get_url:
+        url: https://github.com/etcd-io/etcd/archive/refs/tags/v3.5.9.tar.gz        
+        dest: /home/ubuntu/v3.5.9.tar.gz
+    - name: Install etcd's benchmark tool
+      shell: 
+        cmd: |
+          tar xf v3.5.9.tar.gz
+          cd etcd-3.5.9 && go install -v ./tools/benchmark
+          cp /root/go/bin/* /usr/bin/
+        chdir: /home/ubuntu
+    - name: Extract etcd and install etcdctl
+      shell:
+        cmd: |
+         tar xf etcd.tar.gz
+         cp etcd-v3.5.9-linux-amd64/etcd* /usr/bin/
+        chdir: /home/ubuntu
+    - name: Replace /etc/hosts
+      template:
+        src: ../templates/hosts.j2
+        dest: /etc/hosts
+    - name: Create a list of nodes
+      set_fact:
+        node_list: "{{ node_list | default([]) + [ 'http://' + hostvars[item].ansible_host + ':2379'] }}"
+      with_items: "{{ groups['targets'] }}"  # Replace 'your_group_name' with the actual group name from your inventory.
+    - name: Format the list of nodes
+      set_fact:
+        formatted_node_list: "{{ node_list | join(',') }}"  # Replace 'your_group_name' with the actual group name from your inventory.
+    - name: Output nodes.sh
+      shell: |
+        cat <<EOF > /home/ubuntu/nodes.sh
+        export ETCDCTL_API=3
+        export ENDPOINTS={{ formatted_node_list }}
+        EOF
+        chown ubuntu:ubuntu /home/ubuntu/nodes.sh
+    - name: Copy ansible files to the node
+      copy:
+        src: ../
+        dest: /home/ubuntu/deploys
+        owner: ubuntu
+        group: ubuntu
+        mode: '0666'

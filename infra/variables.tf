@@ -6,6 +6,10 @@ variable "GCP_MACHINE_TYPE" {
   default = "n1-standard-1"
 }
 
+variable "GCP_ADMIN_MACHINE_TYPE" {
+  default = "n1-standard-1"
+}
+
 variable "GCP_ZONE" {
   default = "asia-east1-b"
 }

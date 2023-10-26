@@ -5,12 +5,11 @@ resource "google_compute_instance" "etcd" {
   zone         = var.GCP_ZONE
 
   scratch_disk {
-      interface = "NVME"
+    interface = "NVME"
   }
 
   boot_disk {
     initialize_params {
-      #type = "pd-ssd"
       image = "ubuntu-minimal-2304-lunar-amd64-v20230919"
     }
   }
@@ -24,16 +23,4 @@ resource "google_compute_instance" "etcd" {
   metadata = {
     ssh-keys = "ubuntu:${file("keys/id_ed25519.pub")}"
   }
-}
-
-resource "google_compute_firewall" "etcd_firewall" {
-  name    = "etcdfirewall"
-  network = "default"
-
-  allow {
-    protocol = "tcp"
-    ports    = ["2379", "2380"]
-  }
-
-  source_ranges = ["0.0.0.0/0"]
 }
