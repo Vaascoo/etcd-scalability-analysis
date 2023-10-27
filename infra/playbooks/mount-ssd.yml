@@ -1,6 +1,6 @@
 ---
 
-- hosts: targets
+- hosts: external
   become: yes
   become_user: root
 

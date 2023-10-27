@@ -45,10 +45,12 @@
     - name: Run container
       shell:
         cmd: |
-          docker run --mount "type=bind,source=/mnt,target=/wal" -d -p "2379:2379" -p "2380:2380" -e GOGC=10 \
+          docker run --mount "type=bind,source=/mnt,target=/wal" -d -p "2379:2379" -p "2380:2380" -e GOGC=100 \
           gcr.io/etcd-development/etcd:v3.5.9 \
           etcd \
           --name {{ inventory_hostname[:-9] }} \
+          --snapshot-count=100000 \
+          --backend-batch-limit=10000 \
           --data-dir=/wal/data \
           --wal-dir=/wal/wal \
           --initial-advertise-peer-urls=http://{{ inventory_hostname[:-9] }}:2380 \
