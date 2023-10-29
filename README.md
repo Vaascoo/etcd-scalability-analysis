@@ -4,13 +4,19 @@ The system at study is [etcd](https://etcd.io/).
 
 ## Project Structure
 
-- [benchmarks-l](./benchmarks-l/) and [benchmarks-s](./benchmarks-s/) contain the experimental data and scripts to generate the plots
-- [scripts](./scripts/) scripts uses to run the cluster and benchmarks
+- [benchmarks-l](./benchmarks-l/) and [benchmarks-s](./benchmarks-s/) contain the experimental data and scripts from Stage I
+- [benchmarks-cores](./benchmarks-cores/) contain the [experimental data](./benchmarks-cores/benchmarks-cores.csv), the [graph](./benchmarks-cores/cores_graph.png) and the [gnuplot script](./benchmarks-cores/data.gp) to generate the graph.
 - [etcd](./etcd/) contains the source code for etcd added as as git submodule
+- [infra](./infra/) contains Terraform and Ansible scripts to deploy a remote cluster in GCP
+    - [root](./infra/) contains the Terraform scripts to spawn  google compute instances and other resources
+    - [vagrant](./infra/vagrant/) contains the Vagrantfile and bootstrap script
+    - [templates](./infra/templates/) contains the template for the ansible inventory and the etcd hostname resolution
+    - [playbooks](./infra/playbooks/) contains the ansible scripts to setup both the workers and the admin node
+    - [keys](./infra/keys/) contains sensitive files
 
 ## Requirements
-- Docker
-- Vagrant
+- [Docker](https://www.docker.com/)
+- [Vagrant](https://developer.hashicorp.com/vagrant/downloads)
 
 ## Etcd CLI
 
@@ -22,7 +28,7 @@ docker run -it --rm --hostname "client" bitnami/etcd bash
 ## Deploy cluster on Google Cloud Platform
 1. Enter the vagrant provisioned docker container.
 ```sh
-cd infra/deploy
+cd infra/vagrant
 vagrant up
 vagrant ssh
 ```
@@ -59,6 +65,7 @@ time benchmark txn-mixed --rw-ratio=4 --consistency s --key-size 256 --clients 1
 ```
 Arguments:
 - `txn-mixed` runs a benchmark with both `put` and `range` commands
+- `--rw-ratio` sets the read-write ratio
 - `--consistency` sets the consistency level for the `range` commands, either serializable or linearizable
 - `--key-size` sets the key size
 - `--clients` sets the number of clients sending requests
