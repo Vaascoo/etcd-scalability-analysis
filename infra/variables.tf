@@ -17,9 +17,3 @@ variable "GCP_ZONE" {
 variable "NODE_COUNT" {
   default = "3"
 }
-
-# source nodes.sh
-
-# etcdctl member list --endpoints=$ENDPOINTS
-
-# time benchmark txn-mixed --rw-ratio=4 --consistency s --key-size 256 --clients 1000 --conns 100 --endpoints $ENDPOINTS --total 500000
