@@ -21,6 +21,6 @@ resource "google_compute_instance" "etcd" {
   }
 
   metadata = {
-    ssh-keys = "ubuntu:${file("keys/id_ed25519.pub")}"
+    ssh-keys = "ubuntu:${file(var.SSH_KEY_PATH)}"
   }
 }

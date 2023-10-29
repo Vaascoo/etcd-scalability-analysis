@@ -1,19 +1,28 @@
 variable "GCP_PROJECT_ID" {
-  default = "esle-402917"
+  type = string
 }
 
 variable "GCP_MACHINE_TYPE" {
-  default = "n1-standard-1"
+  type = string
 }
 
 variable "GCP_ADMIN_MACHINE_TYPE" {
-  default = "n1-standard-32"
+  type = string
 }
 
 variable "GCP_ZONE" {
-  default = "northamerica-northeast1-b"
+  type = string
 }
 
 variable "NODE_COUNT" {
-  default = "3"
+  type = string
 }
+
+variable "GCP_CONFIG_PATH" {
+  type = string
+}
+
+variable "SSH_KEY_PATH" {
+  type = string
+}
+
