@@ -49,7 +49,7 @@ If all the steps are successful, all the user needs to do to run the benchmark i
 ```sh
 ssh ubuntu@<admin-machine> -i <path-to-ssh-key>
 source nodes.sh
-time benchmark txn-mixed --consistency s --key-size 256 --clients 1000 --conns 100 --endpoints $ENDPOINTS --total 500000
+time benchmark txn-mixed --rw-ratio=4 --consistency s --key-size 256 --clients 1000 --conns 100 --endpoints $ENDPOINTS --total 500000  
 ```
 
 ## Benchmark
@@ -58,7 +58,7 @@ Etcd provides a benchmarking tool available for download [here](https://github.c
 
 To test the system we used variations of the following command:
 ```bash
-time benchmark txn-mixed --consistency s --key-size 256 --clients 1000 --conns 100 --endpoints $ENDPOINTS --total 500000
+time benchmark txn-mixed --rw-ratio=4 --consistency s --key-size 256 --clients 1000 --conns 100 --endpoints $ENDPOINTS --total 500000  
 ```
 Arguments:
 - `txn-mixed` runs a benchmark with both `put` and `range` commands
