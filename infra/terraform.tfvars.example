@@ -1,0 +1,7 @@
+GCP_PROJECT_ID = "402917"
+GCP_MACHINE_TYPE = "n1-standard-1"
+GCP_ADMIN_MACHINE_TYPE = "n1-standard-1"
+GCP_ZONE = "northamerica-northeast1-b"
+NODE_COUNT = "3"
+GCP_CONFIG_PATH = "keys/esle-402917-2bc146125413.json"
+SSH_KEY_PATH = "keys/id_ed25519.pub"

@@ -10,8 +10,7 @@ The system at study is [etcd](https://etcd.io/).
 
 ## Requirements
 - Docker
-- Terraform
-- Ansible
+- Vagrant
 
 ## Etcd CLI
 
@@ -21,22 +20,20 @@ docker run -it --rm --hostname "client" bitnami/etcd bash
 ```
 
 ## Deploy cluster on Google Cloud Platform
-
-1. Change the values in `variables.tf` according your desired configuration.
-2. Configure the google provider in terraform.
-3. Generate an ssh key to deploy in the machines created.
+1. Enter the vagrant provisioned docker container.
 ```sh
-# e.g.
-ssh-keygen -t ed25519
+cd infra/deploy
+vagrant up
+vagrant ssh
 ```
-4. Change the path to the ssh key in `worker.tf`.
-5. Deploy the infrastructure with terraform.
+2. Copy `terraform.tfvars.example` to `terraform.tfvars` and change the values accordingly.
+3. Deploy the infrastructure with terraform.
 ```tf
 terraform plan -out tf.lock
 terraform apply tf.lock
 ```
-6. Change the path to the ssh key in `ansible.cfg`
-7. Run the playbooks
+4. Change the path to the ssh key in `ansible.cfg`
+5. Run the playbooks
 ```sh
 ansible-playbook playbooks/admin.yml
 ansible-playbook playbooks/mount-ssd.yml
