@@ -13,6 +13,7 @@ The system at study is [etcd](https://etcd.io/).
     - [templates](./infra/templates/) contains the template for the ansible inventory and the etcd hostname resolution
     - [playbooks](./infra/playbooks/) contains the ansible scripts to setup both the workers and the admin node
     - [keys](./infra/keys/) contains sensitive files
+- [reports](./reports/) contains the reports for stage I (Universal Scalability Law) and stage II (Fractorial Factorial Design)
 
 ## Requirements
 - [Docker](https://www.docker.com/)
